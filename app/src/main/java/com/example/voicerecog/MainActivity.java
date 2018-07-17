@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     short[] shortBuffer = new short[1024];
 
 
-    public TextView mTimer;
+    public EditText mNama;
     public Button mStartButton;
     public Button mStopButton;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (AlizeException e) {
             e.printStackTrace();
         }
-        mTimer = (TextView) findViewById(R.id.time);
+        mNama = (EditText) findViewById(R.id.nama);
         mStartButton = (Button) findViewById(R.id.start_record);
         mStopButton = (Button) findViewById(R.id.stop_record);
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -111,9 +112,11 @@ public class MainActivity extends AppCompatActivity {
     public void trainSpeakerModel(short[] input) throws AlizeException {
         short[] audio = input;
         if(audio != null){
+            String nama = mNama.getText().toString();
             alizeSystem.addAudio(audio);
-            alizeSystem.createSpeakerModel("Test");
+            alizeSystem.createSpeakerModel(nama);
             Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_LONG).show();
+            Log.d("System Status : ", String.valueOf(alizeSystem.speakerCount()));
         }
     }
 

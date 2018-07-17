@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/time"
+    <EditText
+        android:id="@+id/nama"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/start_record"
         android:layout_centerHorizontal="true"
-        android:text="0:00.0"
+        android:text="Nama"
         android:paddingBottom="20dp"/>
     <Button
         android:id="@+id/start_record"
