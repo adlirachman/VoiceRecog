@@ -6,28 +6,112 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/nama"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/start_record"
-        android:layout_centerHorizontal="true"
-        android:text="Nama"
-        android:paddingBottom="20dp"/>
-    <Button
-        android:id="@+id/start_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:layout_centerInParent="true"
-        android:paddingBottom="10dp"/>
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="80dp">
 
-    <Button
-        android:id="@+id/stop_record"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/nama"
+            android:text="Train Speaker"
+            android:textSize="15sp"
+            android:textColor="@color/colorPrimary"/>
+        <EditText
+            android:id="@+id/nama"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/start_record"
+            android:layout_centerHorizontal="true"
+            android:hint="Nama"
+            android:paddingBottom="20dp" />
+
+        <Button
+            android:id="@+id/start_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="10dp"
+            android:text="Start" />
+
+        <Button
+            android:id="@+id/stop_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/start_record"
+            android:layout_centerHorizontal="true"
+            android:text="Stop" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="80dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="186dp"
+            android:text="Identify Speaker"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/nama2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/start_record2"
+            android:layout_centerHorizontal="true"
+            android:hint="Nama"
+            android:paddingBottom="20dp" />
+
+        <Button
+            android:id="@+id/start_record2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="10dp"
+            android:text="Start" />
+
+        <Button
+            android:id="@+id/stop_record2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/start_record2"
+            android:layout_centerHorizontal="true"
+            android:text="Stop" />
+
+    </RelativeLayout>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
-        android:layout_below="@+id/start_record"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="147dp"
+        android:text="Result: "
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="118dp"
+        android:hint="true or false"
+        android:text=""
+        android:textSize="15sp"
+        android:textColor="@color/colorPrimary"/>
 
 </RelativeLayout>

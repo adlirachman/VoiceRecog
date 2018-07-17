@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import AlizeSpkRec.*;
 
 
@@ -27,13 +28,17 @@ public class MainActivity extends AppCompatActivity {
     AudioRecord audioRecord = null;
     boolean isRecording = false;
     int buffSize = 0;
+    int buffSize2 = 0;
     int blockSize = 256;
     short[] shortBuffer = new short[1024];
+    short[] shortBuffer2 = new short[1024];
+    byte[] byteBuffer;
 
 
     public EditText mNama;
-    public Button mStartButton;
-    public Button mStopButton;
+    public TextView mNama2;
+    public Button mStartButton,mStartButton2;
+    public Button mStopButton,mStopButton2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         try {
             config();
-            Log.d("System Status : ", String.valueOf(alizeSystem.featureCount()));
-            Log.d("System Status : ", String.valueOf(alizeSystem.speakerCount()));
-            Log.d("System Status : ", String.valueOf(alizeSystem.isUBMLoaded()));
+            Log.d("System Status", String.valueOf(alizeSystem.featureCount()));
+            Log.d("System Status", String.valueOf(alizeSystem.speakerCount()));
+            Log.d("System Status", String.valueOf(alizeSystem.isUBMLoaded()));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (AlizeException e) {
@@ -52,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
         mNama = (EditText) findViewById(R.id.nama);
         mStartButton = (Button) findViewById(R.id.start_record);
         mStopButton = (Button) findViewById(R.id.stop_record);
+        mNama2 = (TextView) findViewById(R.id.result);
+        mStartButton2 = (Button) findViewById(R.id.start_record2);
+        mStopButton2 = (Button) findViewById(R.id.stop_record2);
+
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestRecordAudioPermission();
         }
@@ -81,8 +90,50 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Toast.makeText(MainActivity.this,"Recording stopped",Toast.LENGTH_LONG).show();
+
             }
         });
+
+        mStartButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    alizeSystem.resetAudio();
+                    alizeSystem.resetFeatures();
+                } catch (AlizeException e) {
+                    e.printStackTrace();
+                }
+                buffSize2 = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT );
+                audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buffSize2);
+                audioRecord.startRecording();
+
+                isRecording=true;
+                audioRecord.read(shortBuffer2,0,shortBuffer2.length);
+                Toast.makeText(MainActivity.this,"Recording start",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        mStopButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioRecord.stop();
+                isRecording = false;
+                Toast.makeText(MainActivity.this,"Recording stopped",Toast.LENGTH_SHORT).show();
+                String nama = mNama.getText().toString();
+                short[] audio = shortBuffer2;
+                try {
+                    alizeSystem.addAudio(audio);
+                    SimpleSpkDetSystem.SpkRecResult verificationResult = alizeSystem.verifySpeaker(nama);
+                    boolean match = verificationResult.match;
+                    Toast.makeText(MainActivity.this,String.valueOf(match),Toast.LENGTH_LONG).show();
+                    mNama2.setText(String.valueOf(match));
+                } catch (AlizeException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
     }
 
 
@@ -116,11 +167,14 @@ public class MainActivity extends AppCompatActivity {
             alizeSystem.addAudio(audio);
             alizeSystem.createSpeakerModel(nama);
             Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_LONG).show();
-            Log.d("System Status : ", "speaker : "+String.valueOf(alizeSystem.speakerCount()));
+            Log.d("System Status", "speaker : "+String.valueOf(alizeSystem.speakerCount()));
         }
     }
 
-    //Audio Recording
+    public void writeToFile(){
+
+    }
+
 
 
 
