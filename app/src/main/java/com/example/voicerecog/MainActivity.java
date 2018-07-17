@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             alizeSystem.addAudio(audio);
             alizeSystem.createSpeakerModel(nama);
             Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_LONG).show();
-            Log.d("System Status : ", String.valueOf(alizeSystem.speakerCount()));
+            Log.d("System Status : ", "speaker : "+String.valueOf(alizeSystem.speakerCount()));
         }
     }
 
