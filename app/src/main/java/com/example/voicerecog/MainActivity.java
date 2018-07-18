@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     short[] shortBuffer = new short[1024];
     short[] shortBuffer2 = new short[1024];
     byte[] byteBuffer;
+    int sampleRate = 44100;
 
 
     public EditText mNama;
@@ -46,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         try {
             config();
-            Log.d("System Status", String.valueOf(alizeSystem.featureCount()));
-            Log.d("System Status", String.valueOf(alizeSystem.speakerCount()));
-            Log.d("System Status", String.valueOf(alizeSystem.isUBMLoaded()));
+            loadBackgroundmodel();
+            Log.d("Alize Status", "Feature Count: "+String.valueOf(alizeSystem.featureCount()));
+            Log.d("Alize Status", "Speaker Count: "+String.valueOf(alizeSystem.speakerCount()));
+            Log.d("Alize Status", "isUBMLoaded  : "+String.valueOf(alizeSystem.isUBMLoaded()));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (AlizeException e) {
@@ -69,13 +71,13 @@ public class MainActivity extends AppCompatActivity {
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buffSize = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT );
-                audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buffSize);
+                buffSize = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT );
+                audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buffSize);
                 audioRecord.startRecording();
 
                 isRecording=true;
                 audioRecord.read(shortBuffer,0,shortBuffer.length);
-                Toast.makeText(MainActivity.this,"Recording start",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,"Recording start",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -89,27 +91,27 @@ public class MainActivity extends AppCompatActivity {
                 } catch (AlizeException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(MainActivity.this,"Recording stopped",Toast.LENGTH_LONG).show();
-
+                Toast.makeText(MainActivity.this,"Recording stopped",Toast.LENGTH_SHORT).show();
+                try {
+                    alizeSystem.resetAudio();
+                    alizeSystem.resetFeatures();
+                    Log.d("Alize","system reset done");
+                } catch (AlizeException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         mStartButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    alizeSystem.resetAudio();
-                    alizeSystem.resetFeatures();
-                } catch (AlizeException e) {
-                    e.printStackTrace();
-                }
-                buffSize2 = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT );
-                audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buffSize2);
+                buffSize2 = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT );
+                audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buffSize2);
                 audioRecord.startRecording();
 
                 isRecording=true;
                 audioRecord.read(shortBuffer2,0,shortBuffer2.length);
-                Toast.makeText(MainActivity.this,"Recording start",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,"Recording start",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                     alizeSystem.addAudio(audio);
                     SimpleSpkDetSystem.SpkRecResult verificationResult = alizeSystem.verifySpeaker(nama);
                     boolean match = verificationResult.match;
-                    Toast.makeText(MainActivity.this,String.valueOf(match),Toast.LENGTH_LONG).show();
+//                    Toast.makeText(MainActivity.this,String.valueOf(match),Toast.LENGTH_SHORT).show();
                     mNama2.setText(String.valueOf(match));
                 } catch (AlizeException e) {
                     e.printStackTrace();
@@ -154,7 +156,9 @@ public class MainActivity extends AppCompatActivity {
         InputStream configAsset = getApplicationContext().getAssets().open("AlizeConfigurationExample.cfg");
         alizeSystem = new SimpleSpkDetSystem(configAsset,getApplicationContext().getFilesDir().getPath());
         configAsset.close();
+    }
 
+    public void loadBackgroundmodel() throws IOException, AlizeException {
         InputStream backgroundModelAsset = getApplicationContext().getAssets().open("gmm/world.gmm");
         alizeSystem.loadBackgroundModel(backgroundModelAsset);
         backgroundModelAsset.close();
@@ -166,14 +170,12 @@ public class MainActivity extends AppCompatActivity {
             String nama = mNama.getText().toString();
             alizeSystem.addAudio(audio);
             alizeSystem.createSpeakerModel(nama);
-            Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_LONG).show();
+            alizeSystem.saveSpeakerModel(nama,"test_"+nama);
+            Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_SHORT).show();
             Log.d("System Status", "speaker : "+String.valueOf(alizeSystem.speakerCount()));
         }
     }
 
-    public void writeToFile(){
-
-    }
 
 
 
