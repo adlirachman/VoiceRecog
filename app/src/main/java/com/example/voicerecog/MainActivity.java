@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     short[] shortBuffer = new short[1024];
     short[] shortBuffer2 = new short[1024];
     byte[] byteBuffer;
-    int sampleRate = 44100;
+    int sampleRate = 48000;
 
 
     public EditText mNama;
