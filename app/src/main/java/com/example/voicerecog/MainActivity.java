@@ -138,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
     private void requestRecordAudioPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String requiredPermission = Manifest.permission.RECORD_AUDIO;
@@ -165,24 +163,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void trainSpeakerModel(short[] input) throws AlizeException {
-        short[] audio = input;
-        if(audio != null){
+        if(input != null){
             String nama = mNama.getText().toString();
-            alizeSystem.addAudio(audio);
+            alizeSystem.addAudio(input);
             alizeSystem.createSpeakerModel(nama);
             alizeSystem.saveSpeakerModel(nama,"test_"+nama);
             Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_SHORT).show();
             Log.d("System Status", "speaker : "+String.valueOf(alizeSystem.speakerCount()));
         }
     }
-
-
-
-
-
-
-
-
-
 
 }
