@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public EditText mNama;
-    public TextView mNama2;
+    public TextView mNama2, mScore;
     public Button mStartButton,mStartButton2;
     public Button mStopButton,mStopButton2;
 
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mNama2 = (TextView) findViewById(R.id.result);
         mStartButton2 = (Button) findViewById(R.id.start_record2);
         mStopButton2 = (Button) findViewById(R.id.stop_record2);
+        mScore = findViewById(R.id.result);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestRecordAudioPermission();
@@ -129,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
                     boolean match = verificationResult.match;
 //                    Toast.makeText(MainActivity.this,String.valueOf(match),Toast.LENGTH_SHORT).show();
                     mNama2.setText(String.valueOf(match));
+                    Float score = verificationResult.score;
+                    mScore.setText(score.toString());
                 } catch (AlizeException e) {
                     e.printStackTrace();
                 }
