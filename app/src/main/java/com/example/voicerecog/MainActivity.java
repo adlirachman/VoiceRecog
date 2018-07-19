@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mNama2 = (TextView) findViewById(R.id.result);
         mStartButton2 = (Button) findViewById(R.id.start_record2);
         mStopButton2 = (Button) findViewById(R.id.stop_record2);
-        mScore = findViewById(R.id.result);
+        mScore = findViewById(R.id.score);
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestRecordAudioPermission();
