@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         mStartButton.setVisibility(View.GONE);
         mStopButton.setVisibility(View.GONE);
+        mStartButton2.setVisibility(View.GONE);
+        mStopButton2.setVisibility(View.GONE);
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestRecordAudioPermission();
         }
@@ -201,6 +203,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return baos.toByteArray();
+    }
+
+    public void verifySpeaker(View view) throws IOException {
+        try {
+            InputStream wavSpeaker = getResources().openRawResource(R.raw.churchill);
+            byte[] speaker = new byte[wavSpeaker.available()];
+            alizeSystem.addAudio(speaker);
+            wavSpeaker.close();
+            SimpleSpkDetSystem.SpkRecResult verificationResult = alizeSystem.verifySpeaker("obama");
+            boolean match = verificationResult.match;
+//                    Toast.makeText(MainActivity.this,String.valueOf(match),Toast.LENGTH_SHORT).show();
+            mNama2.setText(String.valueOf(match));
+            Float score = verificationResult.score;
+            mScore.setText(score.toString());
+        } catch (AlizeException e) {
+            e.printStackTrace();
+        }
     }
 
 }
