@@ -184,8 +184,8 @@ public class MainActivity extends AppCompatActivity {
     public void trainWavModel() throws IOException, AlizeException {
         InputStream wavSpeaker = getResources().openRawResource(R.raw.obama);
         byte[] speaker = new byte[wavSpeaker.available()];
+        alizeSystem.addAudio(speaker);
         wavSpeaker.close();
-        alizeSystem.addAudio(wavSpeaker);
         alizeSystem.createSpeakerModel("obama");
         alizeSystem.saveSpeakerModel("obama","test_obama");
         Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_SHORT).show();
