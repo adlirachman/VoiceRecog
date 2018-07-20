@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             config();
             loadBackgroundmodel();
+            trainWavModel();
             Log.d("Alize Status", "Feature Count: "+String.valueOf(alizeSystem.featureCount()));
             Log.d("Alize Status", "Speaker Count: "+String.valueOf(alizeSystem.speakerCount()));
             Log.d("Alize Status", "isUBMLoaded  : "+String.valueOf(alizeSystem.isUBMLoaded()));
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         mStopButton2 = (Button) findViewById(R.id.stop_record2);
         mScore = findViewById(R.id.score);
 
+        mStartButton.setVisibility(View.GONE);
+        mStopButton.setVisibility(View.GONE);
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestRecordAudioPermission();
         }
@@ -89,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 isRecording = false;
                 try {
                     trainSpeakerModel(shortBuffer);
+
                 } catch (AlizeException e) {
                     e.printStackTrace();
                 }
@@ -174,6 +179,28 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_SHORT).show();
             Log.d("System Status", "speaker : "+String.valueOf(alizeSystem.speakerCount()));
         }
+    }
+
+    public void trainWavModel() throws IOException, AlizeException {
+        InputStream wavSpeaker = getResources().openRawResource(R.raw.obama);
+        byte[] speaker = new byte[wavSpeaker.available()];
+        wavSpeaker.close();
+        alizeSystem.addAudio(wavSpeaker);
+        alizeSystem.createSpeakerModel("obama");
+        alizeSystem.saveSpeakerModel("obama","test_obama");
+        Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_SHORT).show();
+
+    }
+
+    public static byte[] convertStreamToByteArray(InputStream is) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buff = new byte[10240];
+        int i = Integer.MAX_VALUE;
+        while ((i = is.read(buff, 0, buff.length)) > 0) {
+            baos.write(buff, 0, i);
+        }
+
+        return baos.toByteArray();
     }
 
 }
