@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             byte[] speaker = new byte[wavSpeaker.available()];
             alizeSystem.addAudio(speaker);
             wavSpeaker.close();
-            SimpleSpkDetSystem.SpkRecResult verificationResult = alizeSystem.verifySpeaker("obama");
+            SimpleSpkDetSystem.SpkRecResult verificationResult = alizeSystem.verifySpeaker("kerry");
             boolean match = verificationResult.match;
 //                    Toast.makeText(MainActivity.this,String.valueOf(match),Toast.LENGTH_SHORT).show();
             mNama2.setText(String.valueOf(match));
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void identifySpeaker(View view){
+    public void identifySpeaker(View view) throws AlizeException {
         try {
             alizeSystem.resetAudio();
             alizeSystem.resetFeatures();
@@ -246,6 +246,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        String[] id = alizeSystem.speakerIDs();
+        for (int i=0;i<alizeSystem.speakerIDs().length;i++){
+            Log.d("SpeakerID",id[i]);
         }
     }
 
