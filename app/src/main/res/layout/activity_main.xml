@@ -6,6 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/speaker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="74dp"
+        android:hint="Speaker"
+        android:text=""
+        android:textSize="15sp"
+        android:textColor="@color/colorPrimaryDark"
+        />
+    <Button
+        android:id="@+id/indentify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="105dp"
+        android:onClick="identifySpeaker"
+        android:text="Identify" />
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

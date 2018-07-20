@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public EditText mNama;
-    public TextView mNama2, mScore;
+    public TextView mNama2, mScore, mSpeaker;
     public Button mStartButton,mStartButton2;
     public Button mStopButton,mStopButton2;
 
@@ -49,8 +49,26 @@ public class MainActivity extends AppCompatActivity {
         try {
             config();
             loadBackgroundmodel();
-            trainWavModel();
+            InputStream inputKerry = getResources().openRawResource(R.raw.kerry);
+            trainWavModel(inputKerry,"kerry");
+            alizeSystem.resetAudio();
             Log.d("Alize Status", "Feature Count: "+String.valueOf(alizeSystem.featureCount()));
+            alizeSystem.resetFeatures();
+            InputStream inputRumsfeld = getResources().openRawResource(R.raw.rumsfeld);
+            trainWavModel(inputRumsfeld,"rumsfeld");
+            alizeSystem.resetAudio();
+            Log.d("Alize Status", "Feature Count: "+String.valueOf(alizeSystem.featureCount()));
+            alizeSystem.resetFeatures();
+            InputStream inputBush= getResources().openRawResource(R.raw.bush);
+            trainWavModel(inputBush,"bush");
+            alizeSystem.resetAudio();
+            Log.d("Alize Status", "Feature Count: "+String.valueOf(alizeSystem.featureCount()));
+            alizeSystem.resetFeatures();
+            InputStream inputChurchill = getResources().openRawResource(R.raw.churchill);
+            trainWavModel(inputChurchill,"churchill");
+            alizeSystem.resetAudio();
+            Log.d("Alize Status", "Feature Count: "+String.valueOf(alizeSystem.featureCount()));
+            alizeSystem.resetFeatures();
             Log.d("Alize Status", "Speaker Count: "+String.valueOf(alizeSystem.speakerCount()));
             Log.d("Alize Status", "isUBMLoaded  : "+String.valueOf(alizeSystem.isUBMLoaded()));
         } catch (IOException e) {
@@ -65,11 +83,8 @@ public class MainActivity extends AppCompatActivity {
         mStartButton2 = (Button) findViewById(R.id.start_record2);
         mStopButton2 = (Button) findViewById(R.id.stop_record2);
         mScore = findViewById(R.id.score);
+        mSpeaker = findViewById(R.id.speaker);
 
-        mStartButton.setVisibility(View.GONE);
-        mStopButton.setVisibility(View.GONE);
-        mStartButton2.setVisibility(View.GONE);
-        mStopButton2.setVisibility(View.GONE);
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestRecordAudioPermission();
         }
@@ -183,30 +198,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void trainWavModel() throws IOException, AlizeException {
-        InputStream wavSpeaker = getResources().openRawResource(R.raw.obama);
+    public void trainWavModel(InputStream is,String nama) throws IOException, AlizeException {
+        InputStream wavSpeaker = is;
         byte[] speaker = new byte[wavSpeaker.available()];
         alizeSystem.addAudio(speaker);
         wavSpeaker.close();
-        alizeSystem.createSpeakerModel("obama");
-        alizeSystem.saveSpeakerModel("obama","test_obama");
+        alizeSystem.createSpeakerModel(nama);
+        alizeSystem.adaptSpeakerModel(nama);
+        alizeSystem.saveSpeakerModel(nama,"test_"+nama);
         Toast.makeText(MainActivity.this,"Train Speaker berhasil!",Toast.LENGTH_SHORT).show();
 
     }
 
-    public static byte[] convertStreamToByteArray(InputStream is) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buff = new byte[10240];
-        int i = Integer.MAX_VALUE;
-        while ((i = is.read(buff, 0, buff.length)) > 0) {
-            baos.write(buff, 0, i);
-        }
-
-        return baos.toByteArray();
-    }
-
     public void verifySpeaker(View view) throws IOException {
         try {
+            alizeSystem.resetAudio();
+            alizeSystem.resetFeatures();
             InputStream wavSpeaker = getResources().openRawResource(R.raw.churchill);
             byte[] speaker = new byte[wavSpeaker.available()];
             alizeSystem.addAudio(speaker);
@@ -218,6 +225,26 @@ public class MainActivity extends AppCompatActivity {
             Float score = verificationResult.score;
             mScore.setText(score.toString());
         } catch (AlizeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void identifySpeaker(View view){
+        try {
+            alizeSystem.resetAudio();
+            alizeSystem.resetFeatures();
+            InputStream wavSpeaker = getResources().openRawResource(R.raw.kerry);
+            byte[] speaker = new byte[wavSpeaker.available()];
+            alizeSystem.addAudio(speaker);
+            wavSpeaker.close();
+            SimpleSpkDetSystem.SpkRecResult identificationRes = alizeSystem.identifySpeaker();
+            String nama = identificationRes.speakerId;
+            mSpeaker.setText(nama);
+            Float score = identificationRes.score;
+            mScore.setText(score.toString());
+        } catch (AlizeException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
