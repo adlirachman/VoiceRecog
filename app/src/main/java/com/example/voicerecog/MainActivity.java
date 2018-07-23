@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
             InputStream inputKerry = getResources().openRawResource(R.raw.kerry);
             trainWavModel(inputKerry,"kerry");
             alizeSystem.resetAudio();
+            InputStream inputCarter = getResources().openRawResource(R.raw.carter);
+            trainWavModel(inputCarter,"carter");
+            alizeSystem.resetAudio();
             Log.d("Alize Status", "Feature Count: "+String.valueOf(alizeSystem.featureCount()));
             alizeSystem.resetFeatures();
             InputStream inputRumsfeld = getResources().openRawResource(R.raw.rumsfeld);
